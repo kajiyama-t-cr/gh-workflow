@@ -3,7 +3,7 @@ name: hello
 description: hello
 
 inputs:
-  foo:
+  path:
     type: string
 
 runs:
@@ -12,4 +12,4 @@ runs:
   steps:
     - name: say hello
       shell: bash
-      run: echo ${{ inputs.foo }}
+      run: echo ${{ inputs.path }}

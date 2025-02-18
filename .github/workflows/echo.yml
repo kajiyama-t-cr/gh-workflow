@@ -43,4 +43,4 @@ jobs:
       - name: greet
         uses: ./.github/composite/hello
         with:
-          foo: 'foo'
+          path: 'foo'
