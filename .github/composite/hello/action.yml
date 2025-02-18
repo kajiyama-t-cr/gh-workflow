@@ -1,0 +1,14 @@
+name: hello
+
+description: hello
+
+inputs:
+  path:
+    type: string
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: say hello
+      run: echo "hello ${{ inputs.path }}"
