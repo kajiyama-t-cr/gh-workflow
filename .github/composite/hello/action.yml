@@ -11,4 +11,4 @@ runs:
 
   steps:
     - name: say hello
-      run: echo "hello ${{ inputs.path }}"
+      run: echo ${{ inputs.foo }}
