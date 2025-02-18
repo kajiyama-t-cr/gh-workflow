@@ -43,4 +43,4 @@ jobs:
       - name: greet
         uses: ./.github/composite/hello
         with:
-          path: ${{ github.head_ref }}
+          foo: 'foo'

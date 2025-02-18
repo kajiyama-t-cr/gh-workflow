@@ -3,7 +3,7 @@ name: hello
 description: hello
 
 inputs:
-  path:
+  foo:
     type: string
 
 runs:
