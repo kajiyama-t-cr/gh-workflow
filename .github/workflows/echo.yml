@@ -1,6 +1,8 @@
 name: echo sample
 
 on:
+  schedule:
+    - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -14,7 +16,7 @@ on:
       debug:
         description: "Enable debug mode"
         required: false
-        default: "false"
+        default: false
         type: boolean
 
 jobs:
@@ -28,3 +30,4 @@ jobs:
         run: |
           echo "Environment: ${{ github.event.inputs.environment }}"
           echo "Debug Mode: ${{ github.event.inputs.debug }}"
+          echo "branch ${{ github.event.inputs.branch }}"
