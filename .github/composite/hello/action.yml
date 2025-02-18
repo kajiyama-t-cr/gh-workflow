@@ -11,4 +11,5 @@ runs:
 
   steps:
     - name: say hello
+      shell: bash
       run: echo ${{ inputs.foo }}
