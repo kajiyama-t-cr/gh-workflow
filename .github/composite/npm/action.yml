@@ -18,7 +18,9 @@ runs:
     - name: Install foo dependencies
       if: steps.cache-foo-node-modules.outputs.cache-hit != 'true'
       shell: bash
-      run: npm install --prefix foo
+      run: |
+        echo $NODE_ENV
+        npm install --prefix foo
 
     - name: Cache bar node_modules
       id: cache-bar-node-modules
