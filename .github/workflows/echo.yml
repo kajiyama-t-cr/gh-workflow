@@ -53,30 +53,8 @@ jobs:
         with:
           path: ${{ github.ref_name || 'staging' }}
 
-      - name: Cache foo node_modules
-        id: cache-foo-node-modules
-        uses: actions/cache@v3
-        with:
-          path: foo/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('foo/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-    
-      - name: Install foo dependencies
-        if: steps.cache-foo-node-modules.outputs.cache-hit != 'true'
-        shell: bash
-        run: npm install --prefix foo
+      - name: npm
+        uses: ./.github/composite/npm
 
-      - name: Cache bar node_modules
-        id: cache-bar-node-modules
-        uses: actions/cache@v3
-        with:
-          path: bar/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('bar/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-    
-      - name: Install bar dependencies
-        if: steps.cache-bar-node-modules.outputs.cache-hit != 'true'
-        shell: bash
-        run: npm install --prefix bar
+      - name: test
+        run: npm test
