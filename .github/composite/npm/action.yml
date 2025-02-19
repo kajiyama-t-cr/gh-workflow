@@ -19,6 +19,7 @@ runs:
       if: steps.cache-foo-node-modules.outputs.cache-hit != 'true'
       shell: bash
       run: |
+        echo 'NODE_ENV'
         echo $NODE_ENV
         npm install --prefix foo
 
