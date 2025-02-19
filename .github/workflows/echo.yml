@@ -45,4 +45,4 @@ jobs:
       - name: greet
         uses: ./.github/composite/hello
         with:
-          path: ${{ github.head_ref || 'staging' }}
+          path: ${{ github.ref_name || 'staging' }}
