@@ -57,4 +57,5 @@ jobs:
         uses: ./.github/composite/npm
 
       - name: test
-        run: npm test
+        run: |
+          npm test --prefix foo
