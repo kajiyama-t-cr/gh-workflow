@@ -55,6 +55,8 @@ jobs:
 
       - name: npm
         uses: ./.github/composite/npm
+        env:
+          NODE_ENV: production
 
       - name: test
         run: |
