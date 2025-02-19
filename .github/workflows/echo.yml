@@ -29,6 +29,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
       - name: Show inputs
         run: |
           echo "Environment: ${{ github.event.inputs.environment }}"
@@ -56,6 +62,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
     
+      - name: Install foo dependencies
+        if: steps.cache-foo-node-modules.outputs.cache-hit != 'true'
+        shell: bash
+        run: npm install --prefix foo
+
       - name: Cache bar node_modules
         id: cache-bar-node-modules
         uses: actions/cache@v3
@@ -65,3 +76,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
     
+      - name: Install bar dependencies
+        if: steps.cache-bar-node-modules.outputs.cache-hit != 'true'
+        shell: bash
+        run: npm install --prefix bar
