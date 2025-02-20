@@ -37,6 +37,7 @@ jobs:
           echo "Environment: ${{ github.event.inputs.environment }}"
           echo "Debug Mode: ${{ github.event.inputs.debug }}"
           echo "branch ${{ github.event.inputs.branch }}"
+          echo "branch ${{ github.event_name}}"
 
       - run: |
           echo 'is_holiday' ${{ needs.check_holiday.outputs.is_holiday }}
