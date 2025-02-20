@@ -1,0 +1,24 @@
+name: Check Holiday Workflow
+
+on:
+  workflow_call:
+    outputs:
+      holiday:
+        value: ${{ jobs.check_holiday.outputs.holiday }}
+
+jobs:
+  check_holiday:
+    runs-on: ubuntu-latest
+    outputs:
+      holiday: ${{ steps.is_holiday.outputs.holiday }}
+    steps:
+      - uses: actions/setup-node@v4
+      - run: npm install @holiday-jp/holiday_jp
+      - uses: actions/github-script@v7
+        id: is_holiday
+        with:
+          script: |
+            const holiday_jp = require(`${process.env.GITHUB_WORKSPACE}/node_modules/@holiday-jp/holiday_jp`)
+            // new Date() はUTCなので、日本時間に変換
+            const jstDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+            core.setOutput('holiday', holiday_jp.isHoliday(jstDate));
