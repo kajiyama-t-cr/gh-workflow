@@ -42,6 +42,7 @@ jobs:
                 first_business_day.setDate(first_business_day.getDate() + 1);
               }
 
+              console.log({date, first_business_day});
               // 判定対象の日付と、求めた最初の営業日が一致しているかを比較
               return date.getFullYear() === first_business_day.getFullYear() &&
                     date.getMonth() === first_business_day.getMonth() &&
