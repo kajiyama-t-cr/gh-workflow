@@ -21,12 +21,12 @@ on:
         type: boolean
 
 jobs:
-  check_holiday:
-    uses: ./.github/workflows/_check_holiday.yml
+  check_first_business_day:
+    uses: ./.github/workflows/_check_first_business_day.yml
 
   deploy:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && needs.check_holiday.outputs.is_holiday == 'true') }}
-    needs: [check_holiday]
+    if: ${{ !(github.event_name == 'workflow_dispatch' && needs.check_first_business_day.outputs.is_first_business_day == 'false') }}
+    needs: [check_first_business_day]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -40,7 +40,7 @@ jobs:
           echo "branch ${{ github.event_name}}"
 
       - run: |
-          echo 'is_holiday' ${{ needs.check_holiday.outputs.is_holiday }}
+          echo 'is_holiday' ${{ needs.check_first_business_day.outputs.is_holiday }}
           echo '1' $GITHUB_REF
           echo '2' ${{ github.ref }}
           echo '3' ${{ github.ref_name }}
