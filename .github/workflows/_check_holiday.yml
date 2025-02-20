@@ -37,7 +37,7 @@ jobs:
               while (
                 firstBusinessDay.getDay() === 0 || 
                 firstBusinessDay.getDay() === 6 ||
-                holidayJp.isHoliday(firstBusinessDay)
+                holiday_jp.isHoliday(firstBusinessDay)
               ) {
                 firstBusinessDay.setDate(firstBusinessDay.getDate() + 1);
               }
