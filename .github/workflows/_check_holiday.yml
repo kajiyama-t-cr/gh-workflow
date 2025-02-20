@@ -20,7 +20,7 @@ jobs:
           script: |
             const holiday_jp = require(`${process.env.GITHUB_WORKSPACE}/node_modules/@holiday-jp/holiday_jp`)
             // new Date() はUTCなので、日本時間に変換
-            # const date = new Date('2025-2-11');
+            const date = new Date('2025-2-11');
 
             /**
             * 指定された日付がその月の最初の営業日かどうかを判定する関数
