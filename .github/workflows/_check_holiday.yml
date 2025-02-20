@@ -20,7 +20,7 @@ jobs:
           script: |
             const holiday_jp = require(`${process.env.GITHUB_WORKSPACE}/node_modules/@holiday-jp/holiday_jp`)
             // new Date() はUTCなので、日本時間に変換
-            const jstDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+            const date = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
 
             /**
             * 指定された日付がその月の最初の営業日かどうかを判定する関数
@@ -31,22 +31,22 @@ jobs:
             function isFirstBusinessDay(date) {
               const year = date.getFullYear();
               const month = date.getMonth();
-              let firstBusinessDay = new Date(year, month, 1);
+              let first_business_day = new Date(year, month, 1);
 
               // 1日が週末または祝日の場合、次の日に進める
               while (
-                firstBusinessDay.getDay() === 0 || 
-                firstBusinessDay.getDay() === 6 ||
-                holiday_jp.isHoliday(firstBusinessDay)
+                first_business_day.getDay() === 0 || 
+                first_business_day.getDay() === 6 ||
+                holiday_jp.isHoliday(first_business_day)
               ) {
-                firstBusinessDay.setDate(firstBusinessDay.getDate() + 1);
+                first_business_day.setDate(first_business_day.getDate() + 1);
               }
 
               // 判定対象の日付と、求めた最初の営業日が一致しているかを比較
-              return date.getFullYear() === firstBusinessDay.getFullYear() &&
-                    date.getMonth() === firstBusinessDay.getMonth() &&
-                    date.getDate() === firstBusinessDay.getDate();
+              return date.getFullYear() === first_business_day.getFullYear() &&
+                    date.getMonth() === first_business_day.getMonth() &&
+                    date.getDate() === first_business_day.getDate();
             }
 
-            core.setOutput('is_holiday', isFirstBusinessDay(jstDate));
+            core.setOutput('is_holiday', isFirstBusinessDay(date));
             
