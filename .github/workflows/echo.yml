@@ -21,11 +21,11 @@ on:
         type: boolean
 
 jobs:
-  call_holiday:
-    uses: ./.github/workflows/_holiday.yml
+  check_holiday:
+    uses: ./.github/workflows/_check_holiday.yml
 
   deploy:
-    needs: [call_holiday]
+    needs: [check_holiday]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -38,7 +38,7 @@ jobs:
           echo "branch ${{ github.event.inputs.branch }}"
 
       - run: |
-          echo 'holiday' ${{ needs.call_holiday.outputs.holiday }}
+          echo 'is_holiday' ${{ needs.check_holiday.outputs.is_holiday }}
           echo '1' $GITHUB_REF
           echo '2' ${{ github.ref }}
           echo '3' ${{ github.ref_name }}
