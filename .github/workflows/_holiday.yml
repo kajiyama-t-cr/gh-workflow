@@ -20,7 +20,6 @@ jobs:
           script: |
             const holiday_jp = require(`${process.env.GITHUB_WORKSPACE}/node_modules/@holiday-jp/holiday_jp`)
             // new Date() はUTCなので、日本時間に変換
-            # const jstDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
             const jstDate = new Date("2025-2-11");
-            holiday=$(holiday_jp.isHoliday(jstDate))
-            echo "holiday=${holiday}" >> $GITHUB_OUTPUT
+            core.setOutput('holiday', holiday_jp.isHoliday(jstDate));
+            
