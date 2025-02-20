@@ -25,6 +25,7 @@ jobs:
     uses: ./.github/workflows/_check_holiday.yml
 
   deploy:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && needs.check_holiday.outputs.is_holiday == 'true') }}
     needs: [check_holiday]
     runs-on: ubuntu-latest
     steps:
