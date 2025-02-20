@@ -1,9 +1,9 @@
 name: echo sample
 
 on:
-  pull_request:
-  schedule:
-    - cron: '*/5 * * * *'
+  push:
+    branches:
+      - staging
   workflow_dispatch:
     inputs:
       environment:
@@ -21,7 +21,12 @@ on:
         type: boolean
 
 jobs:
+  check_first_business_day:
+    uses: ./.github/workflows/_check_first_business_day.yml
+
   deploy:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && needs.check_first_business_day.outputs.is_first_business_day == 'false') }}
+    needs: [check_first_business_day]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -32,15 +37,12 @@ jobs:
           echo "Environment: ${{ github.event.inputs.environment }}"
           echo "Debug Mode: ${{ github.event.inputs.debug }}"
           echo "branch ${{ github.event.inputs.branch }}"
+          echo "branch ${{ github.event_name}}"
 
       - run: |
+          echo 'is_first_business_day' ${{ needs.check_first_business_day.outputs.is_first_business_day }}
           echo '1' $GITHUB_REF
           echo '2' ${{ github.ref }}
           echo '3' ${{ github.ref_name }}
           echo '4' ${{ github.head_ref }}
           echo '5' ${{ github.base_ref }}
-
-      - name: greet
-        uses: ./.github/composite/hello
-        with:
-          path: ${{ github.head_ref }}
