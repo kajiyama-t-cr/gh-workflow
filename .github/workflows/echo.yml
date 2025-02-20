@@ -31,12 +31,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-
       - name: Show inputs
         run: |
           echo "Environment: ${{ github.event.inputs.environment }}"
@@ -50,17 +44,3 @@ jobs:
           echo '3' ${{ github.ref_name }}
           echo '4' ${{ github.head_ref }}
           echo '5' ${{ github.base_ref }}
-
-      - name: greet
-        uses: ./.github/composite/hello
-        with:
-          path: ${{ github.ref_name || 'staging' }}
-
-      - name: npm
-        uses: ./.github/composite/npm
-        env:
-          NODE_ENV: production
-
-      - name: test
-        run: |
-          npm test --prefix foo
