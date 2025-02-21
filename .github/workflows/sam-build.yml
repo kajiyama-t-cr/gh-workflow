@@ -1,0 +1,26 @@
+name: SAM Build Workflow
+
+on:
+  push:
+    branches:
+      - staging
+  pull_request:
+    branches:
+      - staging
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v2
+      - uses: aws-actions/setup-sam@v1
+        with:
+          version: 1.64.0
+
+      - name: SAMアプリケーションのビルド
+        run: |
+          sam build
