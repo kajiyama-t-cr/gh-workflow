@@ -16,9 +16,9 @@ jobs:
       - name: リポジトリのチェックアウト
         uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v2
-      - uses: aws-actions/setup-sam@v1
+      - uses: aws-actions/setup-sam@v2
         with:
+          use-installer: true
           version: 1.64.0
 
       - name: SAMアプリケーションのビルド
