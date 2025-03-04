@@ -22,11 +22,14 @@ on:
 
 jobs:
   business_day:
-    uses: actions/business-day@v1
-    with:
-      country: JP
-      timezone: Asia/Tokyo
-      locale: ja-JP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Business Day Utility
+        uses: dev-kajiyama/business-day@v1
+        with:
+          country: JP
+          timezone: Asia/Tokyo
+          locale: ja-JP
 
   check_first_business_day:
     uses: ./.github/workflows/_check_first_business_day.yml
