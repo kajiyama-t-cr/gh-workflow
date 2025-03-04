@@ -21,12 +21,19 @@ on:
         type: boolean
 
 jobs:
+  business_day:
+    uses: actions/business-day@v1
+    with:
+      country: JP
+      timezone: Asia/Tokyo
+      locale: ja-JP
+
   check_first_business_day:
     uses: ./.github/workflows/_check_first_business_day.yml
 
   deploy:
     if: ${{ !(github.event_name == 'workflow_dispatch' && needs.check_first_business_day.outputs.is_first_business_day == 'false') }}
-    needs: [check_first_business_day]
+    needs: [check_first_business_day,business_day]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -40,6 +47,8 @@ jobs:
           echo "branch ${{ github.event_name}}"
 
       - run: |
+          echo 'is_first_business_day' ${{ needs.business_day.outputs.is_first_business_day }}
+          echo 'is_first_business_day' ${{ needs.business_day.outputs.first_business_day }}
           echo 'is_first_business_day' ${{ needs.check_first_business_day.outputs.is_first_business_day }}
           echo '1' $GITHUB_REF
           echo '2' ${{ github.ref }}
