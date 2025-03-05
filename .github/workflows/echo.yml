@@ -32,11 +32,9 @@ jobs:
 
       - name: Download monthly run artifact
         id: download_artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: monthly-run-${{ steps.get_date.outputs.current_month }}
-          path: .
-        continue-on-error: true
 
       - name: Check artifact existence
         id: check_artifact
