@@ -1,0 +1,6 @@
+services:
+  samcli:
+    build: ./docker/samcli
+    working_dir: /app
+    volumes:
+      - "./:/app"

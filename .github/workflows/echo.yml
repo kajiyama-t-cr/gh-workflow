@@ -1,9 +1,9 @@
 name: echo sample
 
 on:
-  pull_request:
-  schedule:
-    - cron: '*/5 * * * *'
+  push:
+    branches:
+      - staging
   workflow_dispatch:
     inputs:
       environment:
@@ -21,26 +21,71 @@ on:
         type: boolean
 
 jobs:
-  deploy:
+  monthly_tasks:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Show inputs
+      - name: Get current month
+        id: get_date
         run: |
-          echo "Environment: ${{ github.event.inputs.environment }}"
-          echo "Debug Mode: ${{ github.event.inputs.debug }}"
-          echo "branch ${{ github.event.inputs.branch }}"
+          CURRENT_MONTH=$(date -u +%Y-%m)
+          echo "current_month=$CURRENT_MONTH" >> $GITHUB_OUTPUT
 
-      - run: |
-          echo '1' $GITHUB_REF
-          echo '2' ${{ github.ref }}
-          echo '3' ${{ github.ref_name }}
-          echo '4' ${{ github.head_ref }}
-          echo '5' ${{ github.base_ref }}
-
-      - name: greet
-        uses: ./.github/composite/hello
+      - name: Download monthly run artifact
+        id: download_artifact
+        uses: actions/download-artifact@v4
         with:
-          path: ${{ github.head_ref }}
+          name: monthly-run-${{ steps.get_date.outputs.current_month }}
+          path: .
+
+      - name: Check artifact existence
+        id: check_artifact
+        run: |
+          if [ -f "${{ steps.get_date.outputs.current_month }}.txt" ]; then
+            echo "artifact_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "artifact_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Execute monthly tasks
+        if: steps.check_artifact.outputs.artifact_exists == 'false'
+        run: |
+          echo "Running monthly tasks..."
+          # ここに月次で実行したい処理を記述
+          # 例として、実行完了を示すテキストファイルを作成
+          echo "Monthly tasks executed on $(date -u)" > ${{ steps.get_date.outputs.current_month }}.txt
+
+      - name: Upload monthly run artifact
+        if: steps.check_artifact.outputs.artifact_exists == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: monthly-run-${{ steps.get_date.outputs.current_month }}
+          path: ${{ steps.get_date.outputs.current_month }}.txt
+
+
+  # check_first_business_day:
+  #   uses: ./.github/workflows/_check_first_business_day.yml
+
+  # deploy:
+  #   if: ${{ !(github.event_name == 'workflow_dispatch' && needs.check_first_business_day.outputs.is_first_business_day == 'false') }}
+  #   needs: [check_first_business_day]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Show inputs
+  #       run: |
+  #         echo "Environment: ${{ github.event.inputs.environment }}"
+  #         echo "Debug Mode: ${{ github.event.inputs.debug }}"
+  #         echo "branch ${{ github.event.inputs.branch }}"
+  #         echo "branch ${{ github.event_name}}"
+
+  #     - run: |
+  #         echo 'is_first_business_day' ${{ needs.business_day.outputs.is_first_business_day }}
+  #         echo 'is_first_business_day' ${{ needs.business_day.outputs.first_business_day }}
+  #         echo 'is_first_business_day' ${{ needs.check_first_business_day.outputs.is_first_business_day }}
+  #         echo '1' $GITHUB_REF
+  #         echo '2' ${{ github.ref }}
+  #         echo '3' ${{ github.ref_name }}
+  #         echo '4' ${{ github.head_ref }}
+  #         echo '5' ${{ github.base_ref }}
