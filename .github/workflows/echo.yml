@@ -21,7 +21,7 @@ on:
         type: boolean
 
 jobs:
-  cache:
+  monthly_tasks:
     runs-on: ubuntu-latest
     steps:
       - name: Get current month
@@ -30,24 +30,38 @@ jobs:
           CURRENT_MONTH=$(date -u +%Y-%m)
           echo "current_month=$CURRENT_MONTH" >> $GITHUB_OUTPUT
 
-      - name: Restore monthly run cache
-        id: restore_cache
-        uses: actions/cache@v3
+      - name: Download monthly run artifact
+        id: download_artifact
+        uses: actions/download-artifact@v3
         with:
-          path: ${{ steps.get_date.outputs.current_month }}.txt
-          key: monthly-run-${{ steps.get_date.outputs.current_month }}
+          name: monthly-run-${{ steps.get_date.outputs.current_month }}
+          path: .
+        continue-on-error: true
+
+      - name: Check artifact existence
+        id: check_artifact
+        run: |
+          if [ -f "${{ steps.get_date.outputs.current_month }}.txt" ]; then
+            echo "artifact_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "artifact_exists=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Execute monthly tasks
-        if: steps.restore_cache.outputs.cache-hit != 'true'
-        run: |
-          echo "Running monthly tasks..."
-          # ここに月次で実行したい処理を記述d
-
-      - name: Update monthly run flag
-        if: steps.restore_cache.outputs.cache-hit == 'false'
+        if: steps.check_artifact.outputs.artifact_exists == 'false'
         run: |
           echo "Running monthly tasks..."
           # ここに月次で実行したい処理を記述
+          # 例として、実行完了を示すテキストファイルを作成
+          echo "Monthly tasks executed on $(date -u)" > ${{ steps.get_date.outputs.current_month }}.txt
+
+      - name: Upload monthly run artifact
+        if: steps.check_artifact.outputs.artifact_exists == 'false'
+        uses: actions/upload-artifact@v3
+        with:
+          name: monthly-run-${{ steps.get_date.outputs.current_month }}
+          path: ${{ steps.get_date.outputs.current_month }}.txt
+
 
   # check_first_business_day:
   #   uses: ./.github/workflows/_check_first_business_day.yml
