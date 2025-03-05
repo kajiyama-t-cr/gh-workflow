@@ -1,12 +1,13 @@
 name: SAM Build Workflow
 
 on:
-  push:
-    branches:
-      - staging
-  pull_request:
-    branches:
-      - staging
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - staging
+  # pull_request:
+  #   branches:
+  #     - staging
 
 jobs:
   build:

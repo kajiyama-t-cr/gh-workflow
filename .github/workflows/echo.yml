@@ -21,40 +21,58 @@ on:
         type: boolean
 
 jobs:
-  business_day:
+  cache:
     runs-on: ubuntu-latest
     steps:
-      - name: Business Day Utility
-        uses: dev-kajiyama/business-day@v1
-        with:
-          country: JP
-          timezone: Asia/Tokyo
-          locale: ja-JP
-
-  check_first_business_day:
-    uses: ./.github/workflows/_check_first_business_day.yml
-
-  deploy:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && needs.check_first_business_day.outputs.is_first_business_day == 'false') }}
-    needs: [check_first_business_day,business_day]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Show inputs
+      - name: Get current month
+        id: get_date
         run: |
-          echo "Environment: ${{ github.event.inputs.environment }}"
-          echo "Debug Mode: ${{ github.event.inputs.debug }}"
-          echo "branch ${{ github.event.inputs.branch }}"
-          echo "branch ${{ github.event_name}}"
+          CURRENT_MONTH=$(date -u +%Y-%m)
+          echo "current_month=$CURRENT_MONTH" >> $GITHUB_OUTPUT
 
-      - run: |
-          echo 'is_first_business_day' ${{ needs.business_day.outputs.is_first_business_day }}
-          echo 'is_first_business_day' ${{ needs.business_day.outputs.first_business_day }}
-          echo 'is_first_business_day' ${{ needs.check_first_business_day.outputs.is_first_business_day }}
-          echo '1' $GITHUB_REF
-          echo '2' ${{ github.ref }}
-          echo '3' ${{ github.ref_name }}
-          echo '4' ${{ github.head_ref }}
-          echo '5' ${{ github.base_ref }}
+      - name: Restore monthly run cache
+        id: restore_cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.get_date.outputs.current_month }}.txt
+          key: monthly-run-${{ steps.get_date.outputs.current_month }}
+
+      - name: Execute monthly tasks
+        if: steps.restore_cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Running monthly tasks..."
+          # ここに月次で実行したい処理を記述
+
+      - name: Update monthly run flag
+        if: steps.restore_cache.outputs.cache-hit == 'false'
+        run: |
+          echo "Running monthly tasks..."
+          # ここに月次で実行したい処理を記述
+
+  # check_first_business_day:
+  #   uses: ./.github/workflows/_check_first_business_day.yml
+
+  # deploy:
+  #   if: ${{ !(github.event_name == 'workflow_dispatch' && needs.check_first_business_day.outputs.is_first_business_day == 'false') }}
+  #   needs: [check_first_business_day]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Show inputs
+  #       run: |
+  #         echo "Environment: ${{ github.event.inputs.environment }}"
+  #         echo "Debug Mode: ${{ github.event.inputs.debug }}"
+  #         echo "branch ${{ github.event.inputs.branch }}"
+  #         echo "branch ${{ github.event_name}}"
+
+  #     - run: |
+  #         echo 'is_first_business_day' ${{ needs.business_day.outputs.is_first_business_day }}
+  #         echo 'is_first_business_day' ${{ needs.business_day.outputs.first_business_day }}
+  #         echo 'is_first_business_day' ${{ needs.check_first_business_day.outputs.is_first_business_day }}
+  #         echo '1' $GITHUB_REF
+  #         echo '2' ${{ github.ref }}
+  #         echo '3' ${{ github.ref_name }}
+  #         echo '4' ${{ github.head_ref }}
+  #         echo '5' ${{ github.base_ref }}
