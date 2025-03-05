@@ -41,7 +41,7 @@ jobs:
         if: steps.restore_cache.outputs.cache-hit != 'true'
         run: |
           echo "Running monthly tasks..."
-          # ここに月次で実行したい処理を記述
+          # ここに月次で実行したい処理を記述d
 
       - name: Update monthly run flag
         if: steps.restore_cache.outputs.cache-hit == 'false'
