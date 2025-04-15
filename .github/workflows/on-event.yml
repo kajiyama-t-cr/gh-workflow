@@ -1,0 +1,17 @@
+name: Pull Request CI
+
+on:
+  pull_request:       # プルリクエストイベント全体を監視
+    types: [opened, synchronize, reopened]  # 必要に応じてフィルタリング可能
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          # 実際のテストコマンドをここに追加
