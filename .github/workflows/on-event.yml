@@ -16,6 +16,12 @@ jobs:
           echo "Running tests..."
           # 実際のテストコマンドをここに追加
 
+      - name: Send Slack notification via curl
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text": "Pushイベントが発生しました！"}' \
+          ${{ secrets.SLACK_WEBHOOK_API_URL }}
+
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
