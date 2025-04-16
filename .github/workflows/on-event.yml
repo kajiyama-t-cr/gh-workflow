@@ -15,7 +15,6 @@ jobs:
         run: |
           echo "Running tests..."
           # 実際のテストコマンドをここに追加
-          exit 1
 
       - name: Send Slack notification via curl
         run: |
@@ -25,8 +24,14 @@ jobs:
 
       - uses: 8398a7/action-slack@v3
         with:
-          status: ${{ job.status }}
-          fields: workflow
+          status: custom
+          fields: workflow,job,commit,repo,ref,author,took
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `成功しました of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
+              }]
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_API_URL }}
         if: success() # Pick up events even if the job fails or is canceled.
