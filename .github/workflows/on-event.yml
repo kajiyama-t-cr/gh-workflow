@@ -1,0 +1,40 @@
+name: Dry run staging Deploy
+
+on:
+  pull_request:       # プルリクエストイベント全体を監視
+    types: [opened, synchronize, reopened]  # 必要に応じてフィルタリング可能
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          # 実際のテストコマンドをここに追加
+          exit 1;
+
+      # - name: Send Slack notification via curl
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' \
+      #     --data '{"text": "Pushイベントが発生しました！"}' \
+      #     ${{ secrets.SLACK_WEBHOOK_API_URL }}
+
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: workflow,job
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_API_URL }}
+        if: success() # Pick up events even if the job fails or is canceled..
+
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: workflow,job
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_API_URL }}
+        if: failure() # Pick up events even if the job fails or is canceled..
