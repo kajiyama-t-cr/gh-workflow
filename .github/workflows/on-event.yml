@@ -1,4 +1,4 @@
-name: Pull Request CI
+name: Dry run staging Deploy
 
 on:
   pull_request:       # プルリクエストイベント全体を監視
