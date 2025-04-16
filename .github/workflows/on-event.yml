@@ -15,6 +15,9 @@ jobs:
         run: |
           echo "Running tests..."
           # 実際のテストコマンドをここに追加
+          
+      - name: 意図的な失敗
+        run: exit 1
 
       - uses: 8398a7/action-slack@v3
         with:
