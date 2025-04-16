@@ -16,34 +16,32 @@ jobs:
           echo "Running tests..."
           # 実際のテストコマンドをここに追加
 
-      - name: Notify Slack
-        if: ${{ success() }}
-        uses: 8398a7/action-slack@v3
+      - uses: 8398a7/action-slack@v3
         with:
-          status: ${{ job.status }}
-          fields: workflow,action
+          status: custom
+          fields: workflow,job,commit,repo,ref,author,took
           custom_payload: |
             {
               attachments: [{
                 color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                text: `成功しました`,
+                text: `${process.env.AS_WORKFLOW}\n${process.env.AS_JOB} (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
               }]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.DEV_SLACK_WEBHOOK_API_URL }}
-
-      - name: Notify Slack
-        if: ${{ success() }}
-        uses: 8398a7/action-slack@v3
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: success() # Pick up events even if the job fails or is canceled.
+        
+      - uses: 8398a7/action-slack@v3
         with:
-          status: ${{ job.status }}
-          fields: workflow,action
+          status: custom
+          fields: workflow,job,commit,repo,ref,author,took
           custom_payload: |
             {
               attachments: [{
                 color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                text: `失敗しました`,
+                text: `${process.env.AS_WORKFLOW}\n${process.env.AS_JOB} (${process.env.AS_COMMIT}) of ${process.env.AS_REPO}@${process.env.AS_REF} by ${process.env.AS_AUTHOR} ${{ job.status }} in ${process.env.AS_TOOK}`,
               }]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.DEV_SLACK_WEBHOOK_API_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: failure() # Pick up events even if the job fails or is canceled.
