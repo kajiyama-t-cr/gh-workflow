@@ -28,7 +28,7 @@ jobs:
               }]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_API_URL }}
         if: success() # Pick up events even if the job fails or is canceled.
         
       - uses: 8398a7/action-slack@v3
@@ -43,5 +43,5 @@ jobs:
               }]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_API_URL }}
         if: failure() # Pick up events even if the job fails or is canceled.
