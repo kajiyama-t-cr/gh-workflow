@@ -15,3 +15,35 @@ jobs:
         run: |
           echo "Running tests..."
           # 実際のテストコマンドをここに追加
+
+      - name: Notify Slack
+        if: ${{ success() }}
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: workflow,action
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `成功しました`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.DEV_SLACK_WEBHOOK_API_URL }}
+
+      - name: Notify Slack
+        if: ${{ success() }}
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: workflow,action
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+                text: `失敗しました`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.DEV_SLACK_WEBHOOK_API_URL }}
