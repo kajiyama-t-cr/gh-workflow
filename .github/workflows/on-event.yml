@@ -15,6 +15,7 @@ jobs:
         run: |
           echo "Running tests..."
           # 実際のテストコマンドをここに追加
+          exit 1;
 
       # - name: Send Slack notification via curl
       #   run: |
@@ -24,7 +25,7 @@ jobs:
 
       - uses: 8398a7/action-slack@v3
         with:
-          status: custom
+          status: ${{ job.status }}
           fields: workflow,job,commit,repo,ref,author,took
           custom_payload: |
             {
@@ -39,7 +40,7 @@ jobs:
 
       - uses: 8398a7/action-slack@v3
         with:
-          status: custom
+          status: ${{ job.status }}
           fields: workflow,job,commit,repo,ref,author,took
           custom_payload: |
             {
