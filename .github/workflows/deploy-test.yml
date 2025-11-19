@@ -1,0 +1,45 @@
+name: Deploy Test
+
+on:
+  push:
+    branches:
+      - staging
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - "dev"
+          - "stg"
+          - "prd"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # この environment 設定が重要！GitHub Environmentsの保護ルールを有効化
+    environment: ${{ github.event.inputs.environment || 'stg' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show deployment info
+        run: |
+          echo "🚀 Deploying to: ${{ github.event.inputs.environment || 'stg' }}"
+          echo "📦 Branch: ${{ github.ref_name }}"
+          echo "👤 Triggered by: ${{ github.actor }}"
+          echo "⏰ Timestamp: $(date)"
+
+      - name: Simulate deployment
+        run: |
+          echo "Starting deployment..."
+          sleep 5
+          echo "Deployment completed successfully!"
+
+      - name: Post-deployment info
+        run: |
+          echo "✅ Deployment to ${{ github.event.inputs.environment || 'stg' }} finished"
