@@ -18,8 +18,34 @@ on:
           - "prd"
 
 jobs:
+  check-user:
+    runs-on: ubuntu-latest
+    # workflow_dispatch (手動実行) の場合のみユーザーチェックを実行
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: Check allowed users
+        run: |
+          # 許可するユーザーのリスト（GitHubユーザー名）
+          ALLOWED_USERS=("kajiyama-t-cr" "user2" "user3")
+          ACTOR="${{ github.actor }}"
+
+          echo "👤 Workflow triggered by: ${ACTOR}"
+          echo "📋 Allowed users: ${ALLOWED_USERS[@]}"
+
+          # ユーザーが許可リストに含まれているかチェック
+          if [[ " ${ALLOWED_USERS[@]} " =~ " ${ACTOR} " ]]; then
+            echo "✅ User '${ACTOR}' is authorized to run this workflow"
+          else
+            echo "❌ Error: User '${ACTOR}' is not authorized to run this workflow"
+            echo "Please contact the repository administrator if you need access."
+            exit 1
+          fi
+
   deploy:
     runs-on: ubuntu-latest
+    # check-user ジョブが成功した場合、またはpushイベントの場合のみ実行
+    needs: [check-user]
+    if: ${{ always() && (needs.check-user.result == 'success' || needs.check-user.result == 'skipped') }}
     # この environment 設定が重要！GitHub Environmentsの保護ルールを有効化
     environment: ${{ github.event.inputs.environment || 'stg' }}
 
