@@ -26,7 +26,7 @@ jobs:
       - name: Check allowed users
         run: |
           # 許可するユーザーのリスト（GitHubユーザー名）
-          ALLOWED_USERS=("kajiyama-t-cr" "user2" "user3")
+          ALLOWED_USERS=("user2" "user3")
           ACTOR="${{ github.actor }}"
 
           echo "👤 Workflow triggered by: ${ACTOR}"
