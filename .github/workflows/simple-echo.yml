@@ -1,0 +1,21 @@
+name: Simple Echo Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "Message to echo"
+        required: false
+        default: "Hello from feature branch!"
+        type: string
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo message
+        run: |
+          echo "🎯 Message: ${{ github.event.inputs.message }}"
+          echo "📍 Branch: ${{ github.ref_name }}"
+          echo "👤 Triggered by: ${{ github.actor }}"
+          echo "✅ This workflow is running from a feature branch!"
