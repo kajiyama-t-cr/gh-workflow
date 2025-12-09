@@ -16,9 +16,15 @@ jobs:
       - name: Echo test message
         run: |
           echo "=================================="
-          echo "🔵 これは MAIN ブランチのバージョンです"
+          echo "🟢 これは FEATURE ブランチのバージョンです"
           echo "=================================="
           echo "📝 メッセージ: ${{ github.event.inputs.test_message }}"
           echo "🌿 ブランチ: ${{ github.ref_name }}"
           echo "👤 実行者: ${{ github.actor }}"
           echo "✅ このワークフローは手動実行専用です"
+          echo ""
+          echo "🚀 FEATURE ブランチ独自の処理を実行中..."
+          echo "   - 新機能A: データ処理の最適化"
+          echo "   - 新機能B: ログ出力の改善"
+          echo "   - 新機能C: エラーハンドリングの強化"
+          echo "✨ FEATURE ブランチの処理が完了しました"
