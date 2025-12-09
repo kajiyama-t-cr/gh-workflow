@@ -1,0 +1,21 @@
+name: Manual Test Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_message:
+        description: "テストメッセージ"
+        required: false
+        default: "これはテストです"
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo test message
+        run: |
+          echo "📝 メッセージ: ${{ github.event.inputs.test_message }}"
+          echo "🌿 ブランチ: ${{ github.ref_name }}"
+          echo "👤 実行者: ${{ github.actor }}"
+          echo "✅ このワークフローは手動実行専用です"
