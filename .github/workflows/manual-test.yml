@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Echo test message
         run: |
+          echo "=================================="
+          echo "🔵 これは MAIN ブランチのバージョンです"
+          echo "=================================="
           echo "📝 メッセージ: ${{ github.event.inputs.test_message }}"
           echo "🌿 ブランチ: ${{ github.ref_name }}"
           echo "👤 実行者: ${{ github.actor }}"
