@@ -3,6 +3,13 @@ name: Manual Test Workflow
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        description: "デプロイ環境"
+        required: true
+        type: choice
+        options:
+          - dev
+          - stg
       test_message:
         description: "テストメッセージ"
         required: false
@@ -18,6 +25,7 @@ jobs:
           echo "=================================="
           echo "🟢 これは FEATURE ブランチのバージョンです"
           echo "=================================="
+          echo "🌍 環境: ${{ github.event.inputs.environment }}"
           echo "📝 メッセージ: ${{ github.event.inputs.test_message }}"
           echo "🌿 ブランチ: ${{ github.ref_name }}"
           echo "👤 実行者: ${{ github.actor }}"
@@ -28,3 +36,13 @@ jobs:
           echo "   - 新機能B: ログ出力の改善"
           echo "   - 新機能C: エラーハンドリングの強化"
           echo "✨ FEATURE ブランチの処理が完了しました"
+          echo ""
+          if [ "${{ github.event.inputs.environment }}" == "dev" ]; then
+            echo "🔧 DEV環境での処理:"
+            echo "   - デバッグモード有効"
+            echo "   - 詳細ログ出力"
+          elif [ "${{ github.event.inputs.environment }}" == "stg" ]; then
+            echo "🧪 STG環境での処理:"
+            echo "   - 本番同等設定"
+            echo "   - パフォーマンステスト実施"
+          fi
